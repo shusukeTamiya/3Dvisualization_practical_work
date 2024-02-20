@@ -1,0 +1,631 @@
+<!-- Licensed under a BSD license. See license.html for license -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>Three.js - Basic Cube</title>
+    <style>
+      html,
+      body {
+        width: 50%;
+        height: 50%;
+        margin: 0;
+      }
+
+      #c {
+        width: 50%;
+        height: 50%;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+  <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+  import { ParametricGeometry } from 'three/addons/geometries/ParametricGeometry.js';
+  import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+  import { FontLoader } from "three/addons/loaders/FontLoader.js";
+
+      var scene = new THREE.Scene();
+      var aspect = window.innerWidth / window.innerHeight;
+      var camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+      var renderer = new THREE.WebGLRenderer();
+      console.log(renderer.context);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      camera.position.z = 15;
+      // controls
+      let controls = new OrbitControls(camera, renderer.domElement);  //initilaze control
+      controls.listenToKeyEvents(window); // link to keybord (optional)
+      controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
+      controls.dampingFactor = 0.05;
+      controls.screenSpacePanning = false;
+      controls.minDistance = 2;
+      controls.maxDistance = 15;
+      controls.maxPolarAngle = Math.PI/2;
+
+      const width = 1;
+      const height = 1;
+      const depth = 1;
+      const radius = 0.5;
+      const segment = 30;
+      const radialSegments = 16;
+      const radiusTop = 0.5;
+      const radiusBottom = 0.5;
+      var detail = 0;
+      const innerRadius = 0.2;
+      const outerRadius = 0.5;
+      const thetaSegments = 18;
+      var material = new THREE.MeshNormalMaterial();
+      var widthSegments = 12;
+      var heightSegments = 8;
+      const tubeRadius = 0.2;
+      const tubularSegments = 24;
+      const p = 2;
+      const q = 3;
+      const size = 1;
+      const depthSegments=1;
+      const slices = 25;  
+      const stacks = 25;
+
+
+
+      //Making box (1,1,1)
+      var geometry = new THREE.BoxGeometry(width, height, depth);
+      var box = new THREE.Mesh(geometry, material);
+      scene.add(box);
+      box.position.set(-5,5,0);
+
+      geometry = new THREE.BoxGeometry(width-0.5, height, depth-0.5);
+      box = new THREE.Mesh(geometry, material);
+      scene.add(box);
+      box.position.set(-5,5,3);
+
+      geometry = new THREE.BoxGeometry(width, height-0.5, depth);
+      box = new THREE.Mesh(geometry, material);
+      scene.add(box);
+      box.position.set(-5,5,6);
+
+      //Making a flat circle(1, 32)
+      var geometry = new THREE.CircleGeometry(radius, segment);
+      var flat_circle = new THREE.Mesh(geometry, material);
+      scene.add(flat_circle);
+      flat_circle.position.set(-3, 5, 0);
+
+      geometry = new THREE.CircleGeometry(radius, segment-25);
+      flat_circle = new THREE.Mesh(geometry, material);
+      scene.add(flat_circle);
+      flat_circle.position.set(-3, 5, 3);
+
+      geometry = new THREE.CircleGeometry(radius-0.25, segment-25);
+      flat_circle = new THREE.Mesh(geometry, material);
+      scene.add(flat_circle);
+      flat_circle.position.set(-3, 5, 6);
+
+      //Making a cone(0.5, 1, 16)
+      var geometry = new THREE.ConeGeometry(radius, height, radialSegments);
+      var cone = new THREE.Mesh(geometry, material);
+      scene.add(cone);
+      cone.position.set(-1, 5, 0);
+
+      geometry = new THREE.ConeGeometry(radius, height, radialSegments-8);
+      cone = new THREE.Mesh(geometry, material);
+      scene.add(cone);
+      cone.position.set(-1, 5, 3);
+
+      geometry = new THREE.ConeGeometry(radius-0.2, height, radialSegments-13);
+      cone = new THREE.Mesh(geometry, material);
+      scene.add(cone);
+      cone.position.set(-1, 5, 6);
+
+      //Making cylinder (0.5, 0.5, 1, 16)
+      var geometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments );
+      var cylinder = new THREE.Mesh(geometry, material);
+      scene.add(cylinder);
+      cylinder.position.set(1, 5, 0);
+
+      geometry = new THREE.CylinderGeometry(radiusTop-0.49, radiusBottom, height, radialSegments);
+      cylinder = new THREE.Mesh(geometry, material);
+      scene.add(cylinder);
+      cylinder.position.set(1, 5, 3);
+
+      geometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments-13 );
+      cylinder = new THREE.Mesh(geometry, material);
+      scene.add(cylinder);
+      cylinder.position.set(1, 5, 6);
+
+
+
+      //Making dodechacedron (0.5)
+      var geometry = new THREE.DodecahedronGeometry( radius );
+      var dodechacedron = new THREE.Mesh(geometry, material);
+      scene.add(dodechacedron);
+      dodechacedron.position.set(3, 5, 0);
+
+      var geometry = new THREE.DodecahedronGeometry( radius -0.3 );
+      var dodechacedron = new THREE.Mesh(geometry, material);
+      scene.add(dodechacedron);
+      dodechacedron.position.set(3, 5, 3);
+
+      var geometry = new THREE.DodecahedronGeometry( radius - 0.4);
+      var dodechacedron = new THREE.Mesh(geometry, material);
+      scene.add(dodechacedron);
+      dodechacedron.position.set(3, 5, 6);
+
+      //Making icosahedron
+      var geometry = new THREE.IcosahedronGeometry( radius );
+      var icosahedron = new THREE.Mesh(geometry, material);
+      scene.add(icosahedron);
+      icosahedron.position.set(5, 5, 0);
+
+      geometry = new THREE.IcosahedronGeometry( radius - 0.3 );
+      icosahedron = new THREE.Mesh(geometry, material);
+      scene.add(icosahedron);
+      icosahedron.position.set(5, 5, 3);
+
+      geometry = new THREE.IcosahedronGeometry( radius - 0.4 );
+      icosahedron = new THREE.Mesh(geometry, material);
+      scene.add(icosahedron);
+      icosahedron.position.set(5, 5, 6);
+
+      //Making lathe
+      var points = [];
+      for(let i = 0; i < 10; ++i){
+        points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 0.3 + 0.3, ( i - 5 ) * .08 ) );
+      }
+      var geometry = new THREE.LatheGeometry( points );
+      var lathe = new THREE.Mesh(geometry, material);
+      scene.add(lathe);
+      lathe.position.set(-5, 3, 0);
+
+      points = [];
+      for(let i = 0; i < 10; ++i){
+        points.push( new THREE.Vector2( Math.cos( i * 0.2 ) * 0.3 + 0.3, ( i - 5 ) * .08 ) );
+      }
+      geometry = new THREE.LatheGeometry( points );
+      lathe = new THREE.Mesh(geometry, material);
+      scene.add(lathe);
+      lathe.position.set(-5, 3, 3);
+
+      points = [];
+      for(let i = 0; i < 6; ++i){
+        points.push( new THREE.Vector2( Math.tan( i * 0.2 ) * 0.3 + 0.3, (i - 5 ) * .08 ) );
+      }
+      var geometry = new THREE.LatheGeometry( points );
+      var lathe = new THREE.Mesh(geometry, material);
+      scene.add(lathe);
+      lathe.position.set(-5, 3, 6);
+
+      //Making Octahedron(0.5, 0)
+      var geometry = new THREE.OctahedronGeometry( radius, detail );
+      var  Octahedron = new THREE.Mesh(geometry, material);
+      scene.add(Octahedron);
+      Octahedron.position.set(-3, 3, 0);
+
+      geometry = new THREE.OctahedronGeometry( radius, detail+1 );
+      Octahedron = new THREE.Mesh(geometry, material);
+      scene.add(Octahedron);
+      Octahedron.position.set(-3, 3, 3);
+
+      geometry = new THREE.OctahedronGeometry( radius, detail+3 );
+      Octahedron = new THREE.Mesh(geometry, material);
+      scene.add(Octahedron);
+      Octahedron.position.set(-3, 3, 6);
+      
+      //Making Plane
+      var geometry = new THREE.PlaneGeometry( width, height );
+      var  plane = new THREE.Mesh(geometry, material);
+      scene.add(plane);
+      plane.position.set(-1, 3, 0);
+
+      geometry = new THREE.PlaneGeometry( width, height - 0.3 );
+      plane = new THREE.Mesh(geometry, material);
+      scene.add(plane);
+      plane.position.set(-1, 3, 3);
+
+      geometry = new THREE.PlaneGeometry( width -0.5 , height );
+      plane = new THREE.Mesh(geometry, material);
+      scene.add(plane);
+      plane.position.set(-1, 3, 6);
+
+      //Making Polyhedron
+      var verticesOfCube = [
+	    - 1, - 1, - 1, 1, - 1, - 1, 1, 1, - 1, - 1, 1, - 1,
+	    - 1, - 1, 1, 1, - 1, 1, 1, 1, 1, - 1, 1, 1,
+      ];
+      var indicesOfFaces = [
+	    2, 1, 0, 0, 3, 2,
+	    0, 4, 7, 7, 3, 0,
+	    0, 1, 5, 5, 4, 0,
+	    1, 2, 6, 6, 5, 1,
+	    2, 3, 7, 7, 6, 2,
+	    4, 5, 6, 6, 7, 4,
+      ];
+
+
+      var geometry = new THREE.PolyhedronGeometry(verticesOfCube, indicesOfFaces, radius, detail );
+      var polyhedron =  new THREE.Mesh(geometry, material);
+      scene.add(polyhedron);
+      polyhedron.position.set(1, 3, 0);
+
+      verticesOfCube = [
+	    - 1, - 1, - 1, 1, - 1, - 1, 1, 1, - 1, - 1, 1, - 1,
+	    - 1, - 1, 1, 1, - 1, 1, 1, 1, 1, - 1, 1, 1,
+      ];
+      indicesOfFaces = [
+	    2, 1, 0, 0, 3, 2,
+	    0, 4, 7, 7, 3, 0,
+	    0, 1, 5, 5, 4, 0,
+	    1, 2, 6, 6, 5, 1,
+	    2, 3, 7, 7, 6, 2,
+	    4, 5, 6, 6, 7, 4,
+      ];
+
+      geometry = new THREE.PolyhedronGeometry(verticesOfCube, indicesOfFaces, radius, detail + 1 );
+      polyhedron =  new THREE.Mesh(geometry, material);
+      scene.add(polyhedron);
+      polyhedron.position.set(1, 3, 3);
+
+      verticesOfCube = [
+	    - 1, - 1, - 1, 1, - 1, - 1, 1, 1, - 1, - 1, 1, - 1,
+	    - 1, - 1, 1, 1, - 1, 1, 1, 1, 1, - 1, 1, 1,
+      ];
+      indicesOfFaces = [
+	    2, 1, 0, 0, 3, 2,
+	    0, 4, 7, 7, 3, 0,
+	    0, 1, 5, 5, 4, 0,
+	    1, 2, 6, 6, 5, 1,
+	    2, 3, 7, 7, 6, 2,
+	    4, 5, 6, 6, 7, 4,
+      ];
+
+      geometry = new THREE.PolyhedronGeometry(verticesOfCube, indicesOfFaces, radius, detail+3 );
+      polyhedron =  new THREE.Mesh(geometry, material);
+      scene.add(polyhedron);
+      polyhedron.position.set(1, 3, 6);
+      
+
+      //Making Ring(0.2, 0.5, 18)
+      var geometry = new THREE.RingGeometry(innerRadius, outerRadius, thetaSegments);
+      var ring =  new THREE.Mesh(geometry, material);
+      scene.add(ring);
+      ring.position.set(3, 3, 0);
+
+      geometry = new THREE.RingGeometry(innerRadius-0.2, outerRadius, thetaSegments);
+      ring =  new THREE.Mesh(geometry, material);
+      scene.add(ring);
+      ring.position.set(3, 3, 3);
+
+      geometry = new THREE.RingGeometry(innerRadius, outerRadius, thetaSegments-15);
+      ring =  new THREE.Mesh(geometry, material);
+      scene.add(ring);
+      ring.position.set(3, 3, 6);
+
+
+      //Making Tetrahedron(0.5, 0)
+      var geometry = new THREE.TetrahedronGeometry(radius);
+      var tetrahedron =  new THREE.Mesh(geometry, material);
+      scene.add(tetrahedron);
+      tetrahedron.position.set(5, 3, 0);
+
+      geometry = new THREE.TetrahedronGeometry(radius, detail+1);
+      tetrahedron =  new THREE.Mesh(geometry, material);
+      scene.add(tetrahedron);
+      tetrahedron.position.set(5, 3, 3);
+
+      geometry = new THREE.TetrahedronGeometry(radius, detail+3);
+      tetrahedron =  new THREE.Mesh(geometry, material);
+      scene.add(tetrahedron);
+      tetrahedron.position.set(5, 3, 6);
+      
+      //Making Torus(0.5, 0.2, 24)
+      var geometry = new THREE.TorusGeometry(radius, tubeRadius, tubularSegments);
+      var torus =  new THREE.Mesh(geometry, material);
+      scene.add(torus);
+      torus.position.set(-5, 1, 0);
+
+      geometry = new THREE.TorusGeometry(radius, tubeRadius, tubularSegments-22);
+      torus =  new THREE.Mesh(geometry, material);
+      scene.add(torus);
+      torus.position.set(-5, 1, 3);
+
+      geometry = new THREE.TorusGeometry(radius, tubeRadius-0.1, tubularSegments);
+      torus =  new THREE.Mesh(geometry, material);
+      scene.add(torus);
+      torus.position.set(-5, 1, 6);
+
+      //Making TorusKnot(0.5, 0.2, 24, 2, 3)
+      // p  how many times the geometry winds around its axis of rotational symmetry
+      // q  how many times the geometry winds around a circle in the interior of the torus
+      var geometry = new THREE.TorusKnotGeometry(radius, tubeRadius, tubularSegments, radialSegments, p, q);
+      var torusKnot =  new THREE.Mesh(geometry, material);
+      scene.add(torusKnot);
+      torusKnot.position.set(-3, 1, 0);
+
+      geometry = new THREE.TorusKnotGeometry(radius, tubeRadius, tubularSegments, radialSegments, p-1, q);
+      torusKnot =  new THREE.Mesh(geometry, material);
+      scene.add(torusKnot);
+      torusKnot.position.set(-3, 1, 3);
+
+      geometry = new THREE.TorusKnotGeometry(radius, tubeRadius, tubularSegments, radialSegments, p+2, q+2);
+      torusKnot =  new THREE.Mesh(geometry, material);
+      scene.add(torusKnot);
+      torusKnot.position.set(-3, 1, 6);
+
+      //Making Tube
+      class CustomSinCurve1 extends THREE.Curve {
+        constructor( scale ) {
+        super();
+        this.scale = scale;
+        }
+      getPoint( t ) {
+        var tx = t * 3 - 1.5;
+        var ty = Math.sin( 2 * Math.PI * t );
+        var tz = 0;
+      return new THREE.Vector3( tx, ty, tz ).multiplyScalar( this.scale );
+        }
+      }
+
+      class CustomSinCurve2 extends THREE.Curve {
+        constructor( scale ) {
+        super();
+        this.scale = scale;
+        }
+      getPoint( t ) {
+        var tx = t * 3 - 1.5;
+        var ty = Math.cos( 2 * Math.PI * t );
+        var tz = 0;
+      return new THREE.Vector3( tx, ty, tz ).multiplyScalar( this.scale );
+        }
+      }
+
+
+      class CustomSinCurve3 extends THREE.Curve {
+        constructor( scale ) {
+        super();
+        this.scale = scale;
+        }
+      getPoint( t ) {
+        var tx = t * 3 - 1.5;
+        var ty = Math.cos( 2 * Math.PI * 2*t );
+        var tz = 0;
+      return new THREE.Vector3( tx, ty, tz ).multiplyScalar( this.scale );
+        }
+      }
+
+      var path = new CustomSinCurve1(0.4);
+      var geometry = new THREE.TubeGeometry(path, tubularSegments, radius*0.3, radialSegments, false);
+      var tube =  new THREE.Mesh(geometry, material);
+      scene.add(tube);
+      tube.position.set(-1, 1, 0);
+
+      path = new CustomSinCurve2(0.4);
+      geometry = new THREE.TubeGeometry(path, tubularSegments, radius*0.3, radialSegments, false);
+      tube =  new THREE.Mesh(geometry, material);
+      scene.add(tube);
+      tube.position.set(-1, 1, 3);
+
+      path = new CustomSinCurve3(0.4);
+      geometry = new THREE.TubeGeometry(path, tubularSegments, radius*0.3, radialSegments, false);
+      tube =  new THREE.Mesh(geometry, material);
+      scene.add(tube);
+      tube.position.set(-1, 1, 6);
+
+      //Making Edges(1, 1, 1)
+      var geometry = new THREE.BoxGeometry( width, height, depth ); 
+      var edges = new THREE.EdgesGeometry( geometry ); 
+      var line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial( { color: 0xffffff } ) ); 
+      scene.add( line );
+      line.position.set(1, 1, 0);
+
+      geometry = new THREE.BoxGeometry( width, height, depth ); 
+      edges = new THREE.EdgesGeometry( geometry ); 
+      line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial( { color: 0xfff333 } ) ); 
+      scene.add( line );
+      line.position.set(1, 1, 3);
+
+      geometry = new THREE.BoxGeometry( 1, 1, 1 ); 
+      edges = new THREE.EdgesGeometry( geometry ); 
+      line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial( { color: 0xffaaaa } ) ); 
+      scene.add( line );
+      line.position.set(1, 1, 6);
+
+      //Making Wireframe
+      var geometry = new THREE.SphereGeometry( 0.7, 0.7, 0.7 );
+      var wireframe = new THREE.WireframeGeometry( geometry );
+      var wire = new THREE.LineSegments( wireframe );
+      scene.add( wire );
+      wire.position.set(3, 1, 0);
+
+      geometry = new THREE.SphereGeometry( 0.4, 0.4, 0.4 );
+      wireframe = new THREE.WireframeGeometry( geometry );
+      wire = new THREE.LineSegments( wireframe );
+      scene.add( wire );
+      wire.position.set(3, 1, 3);
+
+      geometry = new THREE.SphereGeometry( 0.2, 0.3, 0.4 );
+      wireframe = new THREE.WireframeGeometry( geometry );
+      wire = new THREE.LineSegments( wireframe );
+      scene.add( wire );
+      wire.position.set(3, 1, 6);
+
+      //Making Shape
+
+      var shape = new THREE.Shape();
+      var x = - 0.25;
+      var y = - 0.5;
+      shape.moveTo( x + 0.25, y + 0.25 );
+      shape.bezierCurveTo( x + 0.25, y + 0.25, x + 0.2, y, x, y );
+      shape.bezierCurveTo( x - 0.3, y, x - 0.3, y + 0.35, x - 0.3, y + 0.35 );
+      shape.bezierCurveTo( x - 0.3, y + 0.55, x - 0.15, y + 0.77, x + 0.25, y + 0.95 );
+      shape.bezierCurveTo( x + 0.6, y + 0.77, x + 0.8, y + 0.45, x + 0.8, y + 0.35 );
+      shape.bezierCurveTo( x + 0.8, y + 0.35, x + 0.8, y, x + 0.5, y );
+      shape.bezierCurveTo( x + 0.35, y, x + 0.25, y + 0.25, x + 0.25, y + 0.25 );
+      var geometry = new THREE.ShapeGeometry( shape );
+      var heart = new THREE.Mesh( geometry, material ) ;
+      scene.add( heart );
+      heart.position.set(5, 1, 0);
+      
+      shape = new THREE.Shape();
+      var x = 0;
+      var y = 0;
+      shape.moveTo( x, y);
+      shape.bezierCurveTo( x, y - 0.25, x + 0.25, y + 0.25, x - 0.25, y + 0.25 );
+      var geometry = new THREE.ShapeGeometry( shape );
+      var part1 = new THREE.Mesh( geometry, material ) ;
+      scene.add( part1 );
+      part1.position.set(5, 1, 3);
+
+      shape = new THREE.Shape();
+      var x = 0;
+      var y = 0;
+      shape.moveTo(x, y);
+      shape.bezierCurveTo( x + 0.25, y + 0.25, x - 0.25, y + 0.25,  x, y - 0.25, );
+      var geometry = new THREE.ShapeGeometry( shape );
+      var part2 = new THREE.Mesh( geometry, material ) ;
+      scene.add( part2 );
+      part2.position.set(5, 1, 6);
+
+      //Making Sphere(0.5, 12, 8)
+      var geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
+      var sphere =  new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+      sphere.position.set(-5, -1, 0);
+
+      geometry = new THREE.SphereGeometry(radius, widthSegments - 10, heightSegments);
+      sphere =  new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+      sphere.position.set(-5, -1, 3);
+
+      geometry = new THREE.SphereGeometry(radius, widthSegments -10 , heightSegments -6);
+      sphere =  new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+      sphere.position.set(-5, -1, 6);
+
+      function GridDraw(range){
+        for (let i = -range; i < range; i++){
+          for (let j = -range; j < range; j++){
+            geometry = new THREE.PlaneGeometry( 0.02, 0.3 );
+            material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+            plane = new THREE.Mesh(geometry, material);
+            scene.add(plane);
+            plane.position.set(i, -2, j);
+            plane.rotation.x =-Math.PI/2;
+            geometry = new THREE.PlaneGeometry( 0.3, 0.02 );
+            plane = new THREE.Mesh(geometry, material);
+            scene.add(plane);
+            plane.position.set(i, -2, j);
+            plane.rotation.x =-Math.PI/2;
+          }
+        }
+      }
+
+
+      // //Making Parametric
+      // function klein( v, u, target ) {
+      //   u *= Math.PI;
+      //   v *= 2 * Math.PI;
+      //   u = u * 2;
+      //   let x;
+      //   let z;
+      //   if ( u < Math.PI ) {
+      //     x = 3 * Math.cos( u ) * ( 1 + Math.sin( u ) ) + ( 2 * ( 1 - Math.cos( u ) / 2 ) ) * Math.cos( u ) * Math.cos( v );
+      //     z = - 8 * Math.sin( u ) - 2 * ( 1 - Math.cos( u ) / 2 ) * Math.sin( u ) * Math.cos( v );
+      //   } else {
+      //     x = 3 * Math.cos( u ) * ( 1 + Math.sin( u ) ) + ( 2 * ( 1 - Math.cos( u ) / 2 ) ) * Math.cos( v + Math.PI );
+      //     z = - 8 * Math.sin( u );
+      //   }
+      //   const y = - 2 * ( 1 - Math.cos( u ) / 2 ) * Math.sin( v );
+      //   target.set( x, y, z ).multiplyScalar( 0.75 );
+      //   return new ParametricGeometry(klein, slices, stacks );
+      // }
+
+      // var geometry = new ParametricGeometry(klein, slices, stacks);
+      // const parametric = new THREE.Mesh( geometry, material ) ;
+      // scene.add( parametric );
+      // parametric.position.set(-5, -1, 0);
+
+      // Making Text
+      const loader = new FontLoader();
+      loader.load( "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json",
+      ( font )=>{
+        geometry = new TextGeometry( 'three.js!', {
+        font: font,
+        size: 0.5,
+        height: 0.3,
+        curveSegments: 12,
+        bevelEnabled: false,
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelOffset: 0,
+        bevelSegments: 1
+        } );
+
+        var text = new THREE.Mesh(geometry, material);
+        text.position.set(-3, -1, 0);
+        scene.add(text);
+      } );
+      
+      loader.load( "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json",
+      ( font )=>{
+        geometry = new TextGeometry( 'three.js!', {
+        font: font,
+        size: 0.3,
+        height: 0.1,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 0.3,
+        bevelSize: 0.5,
+        bevelOffset: 0,
+        bevelSegments: 1
+        } );
+
+        var text = new THREE.Mesh(geometry, material);
+        text.position.set(-3, -1, 3);
+        scene.add(text);
+      } );
+
+      loader.load( "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json",
+      ( font )=>{
+        geometry = new TextGeometry( 'three.js!', {
+        font: font,
+        size: 0.3,
+        height: 0.1,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 0.3,
+        bevelSize: 0.5,
+        bevelOffset: 0,
+        bevelSegments: 10
+        } );
+
+        var text = new THREE.Mesh(geometry, material);
+        text.position.set(-3, -1, 6);
+        scene.add(text);
+      } );
+
+      function render () {
+        // we will execute render60fps
+        requestAnimationFrame(render);
+        renderer.render(scene, camera);
+      };
+
+      render();
+    </script>
+  </body>
+</html>

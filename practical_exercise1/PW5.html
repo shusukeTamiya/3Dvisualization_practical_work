@@ -1,0 +1,375 @@
+<!-- Licensed under a BSD license. See license.html for license -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>Three.js - Basic Cube</title>
+    <style>
+      html,
+      body {
+        width: 50%;
+        height: 50%;
+        margin: 0;
+      }
+
+      #c {
+        width: 50%;
+        height: 50%;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+  <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.159.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.159.0/examples/jsm/"
+
+      }
+    }
+  </script>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+  import {VRButton} from 'three/addons/webxr/VRButton.js';
+
+
+      var scene = new THREE.Scene();
+      scene.background = new THREE.Color( 0xe6e6e6 );
+      var aspect = window.innerWidth / window.innerHeight;
+      var camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+      var renderer = new THREE.WebGLRenderer();
+      renderer.xr.enabled = true;
+      document.body.appendChild(VRButton.createButton(renderer));
+      console.log(renderer.context);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      let controls = new OrbitControls(camera, renderer.domElement);  //initilaze control
+      controls.listenToKeyEvents(window); // link to keybord (optional)
+      controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
+      controls.dampingFactor = 0.05;
+      controls.screenSpacePanning = false;
+      controls.minDistance = 2;
+      controls.maxDistance = 15;
+      controls.maxPolarAngle = Math.PI/2;
+
+      var geometry = new THREE.BoxGeometry(12, 3, 3);
+      var material_yellow = new THREE.MeshStandardMaterial({color: 0xffd500});
+      var body = new THREE.Mesh(geometry, material_yellow);
+      var material_gray = new THREE.MeshBasicMaterial({color: 0x666666});
+      var geometry = new THREE.CylinderGeometry(1, 1, 0.5, 8 );
+      var front_right= new THREE.Mesh(geometry, material_gray);
+      var front_left = new THREE.Mesh(geometry, material_gray);
+      var back_right = new THREE.Mesh(geometry, material_gray);
+      var back_left = new THREE.Mesh(geometry, material_gray);
+      var material_black = new THREE.MeshStandardMaterial({color: 0x000000});
+
+      var material_gray = new THREE.MeshStandardMaterial({color: 0x666666});
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.5, 8 );
+      var front_right2= new THREE.Mesh(geometry, material_gray);
+      var front_left2 = new THREE.Mesh(geometry, material_gray);
+      var back_right2 = new THREE.Mesh(geometry, material_gray);
+      var back_left2 = new THREE.Mesh(geometry, material_gray);
+
+      var geometry = new THREE.CylinderGeometry(0.8, 0.8, 1, 8 );
+      var arm_joint1 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.6, 0.6, 1, 8 );
+      var arm_joint2 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 6, 20 );
+      var arm1 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.6, 0.6, 1, 8 );
+      var arm_joint3 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 1.4, 20 );
+      var arm2_1 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 20 );
+      var arm2_2 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.25, 8 );
+      var arm_joint4 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 4, 20 );
+      var arm3 = new THREE.Mesh(geometry, material_yellow);
+      var geometry = new THREE.CylinderGeometry(0.48, 0.48, 1, 8 );
+      var arm_joint5 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 20 );
+      var arm4 = new THREE.Mesh(geometry, material_yellow);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.25, 8 );
+      var arm_joint6 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.8, 4 );
+      var arm5 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.6, 8 );
+      var arm_joint7_1 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.6, 8 );
+      var arm_joint7_2 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 6, 3, false, Math.PI*0.5, Math.PI);
+      var arm_hand_right1 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.PlaneGeometry( 1, 1 );
+      var arm_hand_right2 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 6, 3, false, Math.PI*0.5, -Math.PI);
+      var arm_hand_left1 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.PlaneGeometry( 1, 1 );
+      var arm_hand_left2 = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.PlaneGeometry( 100, 100 );
+      var ground = new THREE.Mesh(geometry, material_gray);
+
+      ground.rotation.x = -Math.PI/2;
+      ground.position.y = 0;
+      scene.add(ground);
+      
+      // body
+      body.position.z = -5;
+      body.add(front_left, front_right, back_left, back_right, arm_joint1)
+      front_right.rotation.x = Math.PI/2;
+      front_left.rotation.x = Math.PI/2;
+      back_right.rotation.x = Math.PI/2;
+      back_left.rotation.x = Math.PI/2;
+      front_left.position.set(5,0,-1.5);
+      back_left.position.set(-5, 0, -1.5);
+      front_right.position.set(5,0,1.5);
+      back_right.position.set(-5, 0, 1.5);
+      arm_joint1.position.set(4, 1.5, 0);
+      arm_joint2.rotation.x = Math.PI/2;
+      arm_joint2.position.set(0, 0.8, 0);
+      arm1.rotation.z = Math.PI/2;
+      arm1.position.set(-3, 0, 0);
+      arm_joint3.position.set(-6, 0 ,0);
+      arm2_1.rotation.x = Math.PI/2;
+      arm2_1.rotation.z = Math.PI/4;
+      arm2_1.position.set(0.5, 0 , -0.7);
+      arm2_2.rotation.z = Math.PI/2;
+      arm2_2.position.set(1.2, 0 ,-1.1);
+      arm_joint4.rotation.z = Math.PI/2;
+      arm_joint4.position.set(1.8, 0 , -1.1 );
+      arm3.position.set(0, -2.1, 0);
+      arm_joint5.rotation.z = Math.PI/2;
+      arm_joint5.position.set(0, -4.2, 0);
+      arm4.rotation.z = Math.PI/2;
+      arm4.position.set(-0.5, 0, 0);
+      arm_joint6.rotation.z = Math.PI/2;
+      arm_joint6.position.set(-1.1, 0, 0 );
+      arm5.rotation.x = Math.PI/4;
+      arm5.rotation.z = Math.PI/2;
+      arm5.position.set(0, 0.4, 0);
+      arm_joint7_1.rotation.x = Math.PI/2;
+      arm_joint7_1.position.set(0.4, 0.7, 0);
+      arm_joint7_2.rotation.x = Math.PI/2;
+      arm_joint7_2.position.set(-0.4, 0.7, 0);
+      arm_hand_right1.rotation.z = Math.PI/2;
+      arm_hand_right1.rotation.y = Math.PI/2;
+      arm_hand_right1.position.set(0, 0, -0.4);
+      arm_hand_right2.rotation.y = Math.PI/2;
+      arm_hand_right2.position.set(0, 0, -0.4);
+      arm_hand_left1.rotation.z = Math.PI/2;
+      arm_hand_left1.rotation.y = Math.PI/2;
+      arm_hand_left1.position.set(0, 0, -0.4);
+      arm_hand_left2.rotation.y = Math.PI/2;
+      arm_hand_left2.position.set(0, 0, -0.4);
+
+      // arm_joint1
+      arm_joint1.add(arm_joint2);
+
+      // arm_joint2
+      arm_joint2.add(arm1);
+      arm_joint2.add(arm_joint3);
+
+      // arm_joint3
+      arm_joint3.add(arm2_1);
+      arm_joint3.add(arm2_2);
+      arm_joint3.add(arm_joint4);
+
+      // arm_joint4
+      arm_joint4.add(arm3);
+      arm_joint4.add(arm_joint5);
+
+      // arm_joint5
+      arm_joint5.add(arm4);
+      arm_joint5.add(arm_joint6);
+      
+      // arm_joint6
+      arm_joint6.add(arm5);
+      arm_joint6.add(arm_joint7_1);
+      arm_joint6.add(arm_joint7_2);
+
+      // arm_joint7_1
+      arm_joint7_1.add(arm_hand_left1)
+      arm_joint7_1.add(arm_hand_left2)
+
+      // arm_joint7_2
+      arm_joint7_2.add(arm_hand_right1)
+      arm_joint7_2.add(arm_hand_right2)
+
+
+      //front left 
+      var geometry = new THREE.CylinderGeometry(0.75, 0.75, 6, 6, 3, false, Math.PI*0.5, -Math.PI)
+      var thigh_parts1_fl = new THREE.Mesh(geometry, material_yellow);
+      var geometry = new THREE.PlaneGeometry( 1.5, 6 );
+      var thigh_parts2_fl = new THREE.Mesh(geometry, material_yellow);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 5, 6, 3, false, Math.PI*0.5, Math.PI)
+      var calf_parts1_fl = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.PlaneGeometry( 1, 5 );
+      var calf_parts2_fl = new THREE.Mesh(geometry, material_black);
+      thigh_parts1_fl.rotation.x =  Math.PI/2;
+      thigh_parts2_fl.rotation.x =  Math.PI/2;
+      thigh_parts1_fl.rotation.z =  Math.PI/5;
+      thigh_parts2_fl.rotation.z =  Math.PI/5;
+      calf_parts1_fl.rotation.x =  Math.PI/2;
+      calf_parts2_fl.rotation.x =  Math.PI/2;
+      calf_parts1_fl.rotation.z =  -Math.PI/5;
+      calf_parts2_fl.rotation.z =  -Math.PI/5;
+      thigh_parts1_fl.position.set(-1.3, 0, 1.5);
+      thigh_parts2_fl.position.set(-1.3, 0, 1.5);
+      calf_parts1_fl.position.set(1.2, 0, 1.6);
+      calf_parts2_fl.position.set(1.2, 0, 1.6);
+
+      
+      front_left2.position.set(-2.7, 0, 3.5);
+      front_left.add(thigh_parts1_fl);
+      front_left.add(thigh_parts2_fl);
+      front_left2.add(calf_parts1_fl);
+      front_left2.add(calf_parts2_fl);
+      front_left.add(front_left2);
+
+      //back left
+      var geometry = new THREE.CylinderGeometry(0.75, 0.75, 6, 6, 3, false, Math.PI*0.5, -Math.PI)
+      var thigh_parts1_bl = new THREE.Mesh(geometry, material_yellow);
+      var geometry = new THREE.PlaneGeometry( 1.5, 6 );
+      var thigh_parts2_bl = new THREE.Mesh(geometry, material_yellow);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 5, 6, 3, false, Math.PI*0.5, Math.PI)
+      var calf_parts1_bl = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.PlaneGeometry( 1, 5 );
+      var calf_parts2_bl = new THREE.Mesh(geometry, material_black);
+      thigh_parts1_bl.rotation.x =  Math.PI/2;
+      thigh_parts2_bl.rotation.x =  Math.PI/2;
+      thigh_parts1_bl.rotation.z =  Math.PI/5;
+      thigh_parts2_bl.rotation.z =  Math.PI/5;
+      calf_parts1_bl.rotation.x =  Math.PI/2;
+      calf_parts2_bl.rotation.x =  Math.PI/2;
+      calf_parts1_bl.rotation.z =  -Math.PI/5;
+      calf_parts2_bl.rotation.z =  -Math.PI/5;
+      thigh_parts1_bl.position.set(-1.3, 0, 1.5);
+      thigh_parts2_bl.position.set(-1.3, 0, 1.5);
+      calf_parts1_bl.position.set(1.2, 0, 1.6);
+      calf_parts2_bl.position.set(1.2, 0, 1.6);
+
+      
+      back_left2.position.set(-2.7, 0, 3.5);
+      back_left.add(thigh_parts1_bl);
+      back_left.add(thigh_parts2_bl);
+      back_left2.add(calf_parts1_bl);
+      back_left2.add(calf_parts2_bl);
+      back_left.add(back_left2);
+
+
+      //front right
+      var geometry = new THREE.CylinderGeometry(0.75, 0.75, 6, 6, 3, false, Math.PI*0.5, Math.PI)
+      var thigh_parts1_fr = new THREE.Mesh(geometry, material_yellow);
+      var geometry = new THREE.PlaneGeometry( 1.5, 6 );
+      var thigh_parts2_fr = new THREE.Mesh(geometry, material_yellow);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 5, 6, 3, false, Math.PI*0.5, -Math.PI)
+      var calf_parts1_fr = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.PlaneGeometry( 1, 5 );
+      var calf_parts2_fr = new THREE.Mesh(geometry, material_black);
+      thigh_parts1_fr.rotation.x =  Math.PI/2;
+      thigh_parts2_fr.rotation.x =  Math.PI/2;
+      thigh_parts1_fr.rotation.z =  Math.PI/5;
+      thigh_parts2_fr.rotation.z =  Math.PI/5;
+      calf_parts1_fr.rotation.x =  Math.PI/2;
+      calf_parts2_fr.rotation.x =  Math.PI/2;
+      calf_parts1_fr.rotation.z =  -Math.PI/5;
+      calf_parts2_fr.rotation.z =  -Math.PI/5;
+      thigh_parts1_fr.position.set(-1.3, 0, 1.5);
+      thigh_parts2_fr.position.set(-1.3, 0, 1.5);
+      calf_parts1_fr.position.set(1.2, 0, 1.6);
+      calf_parts2_fr.position.set(1.2, 0, 1.6);
+
+      
+
+      front_right2.position.set(-2.7, 0, 3.5);
+      front_right.add(thigh_parts1_fr);
+      front_right.add(thigh_parts2_fr);
+      front_right.add(front_right2);
+      front_right2.add(calf_parts1_fr);
+      front_right2.add(calf_parts2_fr);
+
+
+      //back right
+      var geometry = new THREE.CylinderGeometry(0.75, 0.75, 6, 6, 3, false, Math.PI*0.5, Math.PI)
+      var thigh_parts1_br = new THREE.Mesh(geometry, material_yellow);
+      var geometry = new THREE.PlaneGeometry( 1.5, 6 );
+      var thigh_parts2_br = new THREE.Mesh(geometry, material_yellow);
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 5, 6, 3, false, Math.PI*0.5, -Math.PI)
+      var calf_parts1_br = new THREE.Mesh(geometry, material_black);
+      var geometry = new THREE.PlaneGeometry( 1, 5 );
+      var calf_parts2_br = new THREE.Mesh(geometry, material_black);
+      thigh_parts1_br.rotation.x =  Math.PI/2;
+      thigh_parts2_br.rotation.x =  Math.PI/2;
+      thigh_parts1_br.rotation.z =  Math.PI/5;
+      thigh_parts2_br.rotation.z =  Math.PI/5;
+      calf_parts1_br.rotation.x =  Math.PI/2;
+      calf_parts2_br.rotation.x =  Math.PI/2;
+      calf_parts1_br.rotation.z =  -Math.PI/5;
+      calf_parts2_br.rotation.z =  -Math.PI/5;
+      thigh_parts1_br.position.set(-1.3, 0, 1.5);
+      thigh_parts2_br.position.set(-1.3, 0, 1.5);
+      calf_parts1_br.position.set(1.2, 0, 1.6);
+      calf_parts2_br.position.set(1.2, 0, 1.6);
+
+      
+      back_right2.position.set(-2.7, 0, 3.5);
+      back_right.add(thigh_parts1_br);
+      back_right.add(thigh_parts2_br);
+      back_right2.add(calf_parts1_br);
+      back_right2.add(calf_parts2_br);
+      back_right.add(back_right2);
+
+      const group = new THREE.Group();
+      group.add(body)
+
+      group.scale.set(1/5,1/5,1/5);
+      group.position.z = -5
+      group.position.y = 1.5
+      scene.add(group)
+      // 平行光源
+      const directionalLight = new THREE.DirectionalLight(0xFFFFFF);
+      directionalLight.position.set(10, 10, 10);
+      scene.add(directionalLight);
+
+
+
+      camera.position.z = (0, 1.6, 0);
+
+
+
+      function render (time) {
+        time *= 0.001
+        var speed = 0.01;
+        if (body.position.x < 10){
+          body.position.x += speed;
+          front_left.rotation.y = 0.3*Math.sin(time);
+          front_right.rotation.y = 0.3*Math.sin(-time);
+          back_left.rotation.y = 0.3*Math.sin(-time);
+          back_right.rotation.y = 0.3*Math.sin(time);
+        }else{
+          arm_joint1.rotation.y = Math.PI*0.5*Math.cos(time);
+          arm_joint2.rotation.y = -(Math.PI/2) + 0.5*Math.PI*Math.cos(-time);
+          arm_joint3.rotation.y = (Math.PI/2) - 0.25*Math.PI*Math.cos(3*time);
+          arm_joint4.rotation.x = 3*time;
+          arm_joint5.rotation.x =  (Math.PI/4) - 0.5*Math.PI*Math.cos(time);
+          arm_joint6.rotation.x = 3*time;
+          arm_joint7_1.rotation.y =  (Math.PI/16) - 0.0625*Math.PI*Math.cos(4*time);
+          arm_joint7_2.rotation.y =  -(Math.PI/16) + 0.0625*Math.PI*Math.cos(4*time);
+        }
+             
+        // renderer.render(scene, camera);
+        renderer.render(scene, camera);
+      };
+      renderer.setAnimationLoop(render);
+    </script>
+  </body>
+</html>

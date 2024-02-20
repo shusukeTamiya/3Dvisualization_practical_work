@@ -1,0 +1,698 @@
+<!-- Licensed under a BSD license. See license.html for license -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>Three.js - Basic Cube</title>
+    <style>
+      html,
+      body {
+        width: 50%;
+        height: 50%;
+        margin: 0;
+      }
+
+      #c {
+        width: 50%;
+        height: 50%;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+  <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { GUI } from 'https://cdn.jsdelivr.net/npm/lil-gui@0.19/+esm';
+  import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+  import { ParametricGeometry } from 'three/addons/geometries/ParametricGeometry.js';
+  import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+  import {VRButton} from 'three/addons/webxr/VRButton.js';
+
+      var scene = new THREE.Scene();
+      scene.background = new THREE.Color( 0x000000 );
+      var aspect = window.innerWidth / window.innerHeight;
+      var camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+      camera.position.set(0, 1.6, 0);
+      var renderer = new THREE.WebGLRenderer();
+      renderer.xr.enabled = true;
+      document.body.appendChild(VRButton.createButton(renderer));
+      console.log(renderer.context);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      
+
+      // controls
+      let controls = new OrbitControls(camera, renderer.domElement);  //initilaze control
+      controls.listenToKeyEvents(window); // link to keybord (optional)
+      controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
+      controls.dampingFactor = 0.05;
+      controls.screenSpacePanning = false;
+      controls.minDistance = 2;
+      controls.maxDistance = 15;
+      controls.maxPolarAngle = Math.PI;
+
+
+
+      var colors = {
+	      color_wall_white: 0xffffff,
+        color_wall_red: 0xe50606,
+        color_wall_green: 0x04bd04,
+        color_material: 0xffffff,
+        emissive: 0xffffff
+      }
+
+
+
+      var geometry = new THREE.PlaneGeometry( 10, 10 );
+      var material_wall = new THREE.MeshPhysicalMaterial( {color: colors.color_wall_white, side: THREE.DoubleSide} );
+      const material_white = new THREE.MeshPhysicalMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+      const material_green = new THREE.MeshPhysicalMaterial( {color: 0x04bd04, side: THREE.BackSide} );
+      const material_red = new THREE.MeshPhysicalMaterial( {color: 0xe50606, side: THREE.FrontSide} );
+      const material_gray = new THREE.MeshPhysicalMaterial({color: 0x666666});
+      const material_black = new THREE.MeshPhysicalMaterial({color: 0x000000});
+      const material_cone = new THREE.MeshLambertMaterial();
+      const material_cylinder = new THREE.MeshPhongMaterial();
+      const material_sphere = new THREE.MeshPhysicalMaterial();
+      const texture_loader1 = new THREE.TextureLoader();
+      const texture_brick1 = texture_loader1.load('brick.jpeg');
+      const texture_loader2 = new THREE.CubeTextureLoader();
+      const env_brick1 = texture_loader2.load(['brick_square.png', 'brick_square.png', 'brick_square.png', 'brick_square.png', 'brick_square.png', 'brick_square.png']);
+      const specular_brick1 = texture_loader1.load(['brick_gray.jpeg']);
+
+      const group = new THREE.Group();
+
+    
+      // floor
+      var floor = new THREE.Mesh(geometry, material_white);
+      floor.rotation.x = Math.PI/2;
+      floor.position.set(0, -5, 5);
+      group.add(floor);
+
+      // wall_white
+      var wall_white = new THREE.Mesh(geometry, material_wall);
+      wall_white.position.set(0, 0, 0);
+      group.add(wall_white);
+
+
+      // ceiling
+      var ceiling = new THREE.Mesh(geometry, material_white);
+      ceiling.rotation.x = Math.PI/2;
+      ceiling.position.set(0, 5, 5);
+      group.add(ceiling);
+
+      // wall_red
+      var wall_red = new THREE.Mesh(geometry, material_red);
+      wall_red.rotation.y = Math.PI/2;
+      wall_red.position.set(-5, 0, 5);
+      group.add(wall_red);
+
+      // wall_green
+      var wall_green = new THREE.Mesh(geometry, material_green);
+      wall_green.rotation.y = Math.PI/2;
+      wall_green.position.set(5, 0, 5);
+      group.add(wall_green);
+
+      // desk_board
+      var geometry = new THREE.BoxGeometry(5,0.5,3);
+      var desk_board = new THREE.Mesh(geometry, material_gray);
+      desk_board.position.set(0, 0, 5);
+
+
+      group.add(desk_board);
+
+      // desk_leg_left1
+      var geometry = new THREE.BoxGeometry(0.5,0.5,2.5);
+      var desk_leg_left1 = new THREE.Mesh(geometry, material_gray);
+      desk_leg_left1.position.set(-2, -0.5, 0);
+      desk_board.add(desk_leg_left1)
+
+      // desk_leg_right1
+      var desk_leg_right1 = new THREE.Mesh(geometry, material_gray);
+      desk_leg_right1.position.set(2, -0.5, 0);
+      desk_board.add(desk_leg_right1);
+
+      // desk_leg_left2
+      var geometry = new THREE.CylinderGeometry(0.25, 0.25, 4, 20 );
+      var desk_leg_left2= new THREE.Mesh(geometry, material_gray);
+      wall_green.rotation.z = Math.PI/2;
+      desk_leg_left2.position.set(-2, -2, 0);
+      desk_board.add(desk_leg_left2);
+
+      // desk_leg_right2
+      var desk_leg_right2= new THREE.Mesh(geometry, material_gray);
+      wall_green.rotation.z = Math.PI/2;
+      desk_leg_right2.position.set(2, -2, 0);
+      desk_board.add(desk_leg_right2);
+
+      // desk_leg_left3
+      var geometry = new THREE.BoxGeometry(0.5,0.25,2.5);
+      var desk_leg_left3 = new THREE.Mesh(geometry, material_gray);
+      desk_leg_left3.position.set(-2, -3.9, 0);
+      desk_board.add(desk_leg_left3);
+
+      // desk_leg_right3
+      var geometry = new THREE.BoxGeometry(0.5,0.25,2.5);
+      var desk_leg_right3 = new THREE.Mesh(geometry, material_gray);
+      desk_leg_right3.position.set(2, -3.9, 0);
+      desk_board.add(desk_leg_right3);
+
+      // desk_leg_center
+      var geometry = new THREE.BoxGeometry(3.5,0.5,0.1);
+      var desk_leg_center = new THREE.Mesh(geometry, material_gray);
+      desk_leg_center.position.set(0, -1.3, 0);
+      desk_board.add(desk_leg_center);
+      
+      // floor_black
+      var geometry = new THREE.BoxGeometry(8,1,8);
+      var floor_black = new THREE.Mesh(geometry, material_black);
+      floor_black.position.set(0, -4.5, 5);
+      group.add(floor_black);
+
+      // cone
+      var geometry = new THREE.ConeGeometry(0.5, 1.5, 20);
+      var cone = new THREE.Mesh(geometry, material_cone);
+      cone.position.set(-1, 1, -0.5);
+      desk_board.add(cone);
+
+      // cylinder
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 20 );
+      var cylinder= new THREE.Mesh(geometry, material_cylinder);
+      cylinder.position.set(1, 1, -0.5);
+      desk_board.add(cylinder);
+
+      // sphere
+      var geometry = new THREE.SphereGeometry(0.5, 20, 20);
+      var sphere =  new THREE.Mesh(geometry, material_sphere);
+      sphere.position.set(0, 0.75, 0.5);
+      desk_board.add(sphere);
+
+      scene.add(group)
+      // light
+      var light_color = 0xffffff;
+      var hemi_color1 = 0xcc8593;
+      var hemi_color2 = 0x27d0d3;
+      var light_intensity = 10;
+
+      const pointlight = new THREE.PointLight(light_color, light_intensity);
+      pointlight.position.set(0,5,5);
+
+      
+      const directionallight = new THREE.DirectionalLight(light_color, light_intensity);
+      directionallight.position.set(0,5,5);
+      directionallight.target.position.set(0, 0, 0);
+
+      const spotlight = new THREE.SpotLight(light_color, light_intensity);
+      spotlight.position.set(0,5,5);
+      spotlight.target.position.set(0, 0, 0);
+
+      const hemilight = new THREE.HemisphereLight(hemi_color1, hemi_color2, light_intensity);
+      hemilight.position.set(0,5,5);
+
+      const wall_white_light1 = new THREE.RectAreaLight(0xffffff, 0.7, 10, 10);
+      wall_white_light1.position.set( 0, 0, 0.001);
+      wall_white_light1.lookAt( 0, 0, 10 );
+      const wall_white_light2 = new THREE.RectAreaLight(0xffffff, 0.7, 10, 10);
+      wall_white_light2.position.set( 0, 0, 0.001);
+      wall_white_light2.lookAt( 0, 0, 0 );
+
+
+      const wall_red_light1 = new THREE.RectAreaLight(0xe50606, 0.7, 10, 10);
+      wall_red_light1.position.set( -4.999, 0, 5);
+      wall_red_light1.lookAt( 5, 0, 5 );
+      const wall_red_light2 = new THREE.RectAreaLight(0x50606, 0.7, 10, 10);
+      wall_red_light2.position.set( -4.999, 0, 5);
+      wall_red_light2.lookAt( -5, 0, 5 );
+
+      const wall_green_light1 = new THREE.RectAreaLight(0x04bd04, 0.7, 10, 10);
+      wall_green_light1.position.set( 4.999, 0, 5);
+      wall_green_light1.lookAt( -5, 0, 5 );
+      const wall_green_light2 = new THREE.RectAreaLight(0x04bd04, 0.7, 10, 10);
+      wall_green_light2.position.set( 4.999, 0, 5);
+      wall_green_light2.lookAt( 5, 0, 5 );
+
+      group.add( wall_white_light1 );
+      group.add( wall_white_light2 );
+      group.add( wall_red_light1 );
+      group.add( wall_red_light2 );
+      group.add( wall_green_light1 );
+      group.add( wall_green_light2 );
+
+      group.scale.set(1/2, 1/2, 1/2); 
+      group.position.z= -5;
+      group.position.y = 1
+
+      // GUI 
+      const gui = new GUI();
+
+      gui.open(false);
+
+      var light_on = {
+        point: true,
+      }
+      
+
+
+      class ColorGUIHelper {
+    constructor(object, prop) {
+      this.object = object;
+      this.prop = prop;
+    }
+    get value() {
+      return `#${this.object[this.prop].getHexString()}`;
+    }
+    set value(hexString) {
+      this.object[this.prop].set(hexString);
+    }
+  }
+
+
+      // Add GUI
+      gui.addColor( colors, 'color_wall_white' ).onChange( value => {
+	      wall_white.material.color.set(value);
+        wall_white_light1.color.set(value);
+        wall_white_light2.color.set(value);
+      } );
+
+
+      gui.addColor( colors, 'color_wall_red' ).onChange( value => {
+	      wall_red.material.color.set(value);
+        wall_red_light1.color.set(value);
+        wall_red_light2.color.set(value);
+      } );
+
+      gui.addColor( colors, 'color_wall_green' ).onChange( value => {
+	      wall_green.material.color.set(value);
+        wall_green_light1.color.set(value);
+        wall_green_light2.color.set(value);
+      } );
+
+      //point light
+      gui.add(light_on, 'point' ).onChange( value => {
+        console.log(value);
+        if (value === true){
+          scene.add(pointlight);
+          pointFolder.open();
+        }
+	      else{
+          scene.remove(pointlight);
+          pointFolder.open(false);
+        }
+      } );
+
+      const pointFolder = gui.addFolder( 'property' );
+      pointFolder.add(pointlight, 'intensity', 0, 20, 1);
+      pointFolder.add(pointlight, 'distance', 1, 20, 0.5);
+      scene.add(pointlight);
+      pointFolder.open(false);
+
+      const amb_light = new THREE.AmbientLight(light_color, 0.02);
+      group.add(amb_light);
+      amb_light.position.set(0,0,0);
+      
+      
+
+      var all_property = {
+        transparent: true,
+        opacity: 1,
+        depthTest: true,
+        depthWrite: true,
+        alphaTest: 0,
+        alphaHash: false,
+        visible: true,
+        side: 'double',
+        wireframe: false,
+        vertexColors: false,
+        fog: true,
+        reflectivity: 0.5,
+        map: 'none',
+        specularMap: 'none',
+        envMap: 'none',
+        specularMap: 'none'
+      }
+
+      var physical = {
+        roughness: 1,
+        metalness: 0,
+        ior: 1.5,
+        iridescence: 0,
+        iridescenceIOR: 1.3,
+        sheen: 0,
+        sheenRoughness:1,
+        sheenColor: 0xffffff,
+        clearcoat: 0,
+        clearcoatRoughness: 0,
+        specularIntensity: 1,
+        specularColor: 0xffffff,
+        flatShading: false,
+      }
+    
+      var phong_lambert = {
+        reflectionRatio: 0,
+      }
+      
+      
+      const all_material = gui.addFolder("all material");
+      all_material.addColor( colors, 'color_material' ).onChange( value => {
+	      cone.material.color.set(value);
+        sphere.material.color.set(value);
+        cylinder.material.color.set(value);
+      } );
+      all_material.open(false)
+
+      
+
+      // transparent
+      all_material.add(all_property, 'transparent').onChange( value => {
+	      if (value === true){
+          cone.material.transparent = true;
+          cylinder.material.transparent = true;
+          sphere.material.transparent = true;
+        }
+	      else{
+          cone.material.transparent = false;
+          cylinder.material.transparent = false;
+          sphere.material.transparent = false;
+        }
+      } );
+      
+      cone.material.transparent = true;
+      cylinder.material.transparent = true;
+      sphere.material.transparent = true;
+
+      // opacity
+      all_material.add(all_property, 'opacity', 0, 1, 0.1).onChange( value => {
+          cone.material.opacity = value;
+          cylinder.material.opacity = value;
+          sphere.material.opacity = value;
+        } );
+      
+      // depth test
+      all_material.add(all_property, 'depthTest').onChange( value => {
+	    if (value === true){
+        cone.material.depthTest = true;
+        cylinder.material.depthTest = true;
+        sphere.material.depthTest = true;
+      }
+	    else{
+        cone.material.depthTest = false;
+        cylinder.material.depthTest = false;
+        sphere.material.depthTest = false;
+      }
+      } );
+      
+      // depth write
+      all_material.add(all_property, 'depthWrite').onChange( value => {
+	    if (value === true){
+        cone.material.depthWrite = true;
+        cylinder.material.depthWrite = true;
+        sphere.material.depthWrite = true;
+      }
+	    else{
+        cone.material.depthWrite = false;
+        cylinder.material.depthWrite = false;
+        sphere.material.depthWrite = false;
+      }
+      } );
+
+      // alpha test
+      all_material.add(all_property, 'alphaTest', 0, 1, 0.1).onChange( value => {
+        cone.material.alphaTest = value;
+        cylinder.material.alphaTest = value;
+        sphere.material.alphaTest = value;
+      } );
+
+      // alpha hash
+      all_material.add(all_property, 'alphaHash').onChange( value => {
+	    if (value === true){
+        cone.material.alphaHash = true;
+        cylinder.material.alphaHash = true;
+        sphere.material.alphaHash = true;
+      }
+	    else{
+        cone.material.alphaHash = false;
+        cylinder.material.alphaHash = false;
+        sphere.material.alphaHash = false;
+      }
+      } );
+
+      // visible
+      all_material.add(all_property, 'visible').onChange( value => {
+	    if (value === true){
+        cone.material.visible = true;
+        cylinder.material.visible = true;
+        sphere.material.visible = true;
+      }
+	    else{
+        cone.material.visible = false;
+        cylinder.material.visible = false;
+        sphere.material.visible = false;
+      }
+      } );
+
+      // side
+      all_material.add(all_property, 'side', [ 'back', 'front', 'double']).onChange( value => {
+	    if (value === 'back'){
+        cone.material.side = THREE.FrontSide;
+        cylinder.material.side = THREE.FrontSide;
+        sphere.material.seide = THREE.FrontSide;
+      }
+      else if(value === 'front'){
+        cone.material.side = THREE.BackSide;
+        cylinder.material.side = THREE.BackSide;
+        sphere.material.seide = THREE.BackSide;
+      }
+	    else{
+        cone.material.side = THREE.DoubleSide;
+        cylinder.material.side = THREE.DoubleSide;
+        sphere.material.side = THREE.DoubleSide;
+      }
+      } );
+
+      // fog
+      all_material.add(all_property, 'fog').onChange( value => {
+	    if (value === true){
+        cone.material.fog = true;
+        cylinder.material.fog = true;
+        sphere.material.fog = true;
+      }
+	    else{
+        cone.material.fog = false;
+        cylinder.material.fog = false;
+        sphere.material.fog = false;
+      }
+      } );
+
+      // wireframe
+      all_material.add(all_property, 'wireframe').onChange( value => {
+	    if (value === true){
+        cone.material.wireframe = true;
+        cylinder.material.wireframe = true;
+        sphere.material.wireframe = true;
+      }
+	    else{
+        cone.material.wireframe = false;
+        cylinder.material.wireframe = false;
+        sphere.material.wireframe = false;
+      }
+      } );
+
+       // vertexColors
+       all_material.add(all_property, 'vertexColors').onChange( value => {
+	    if (value === true){
+        cone.material.vertexColors = true;
+        cylinder.material.vertexColors = true;
+        sphere.material.vertexColors = true;
+      }
+	    else{
+        cone.material.vertexColors = false;
+        cylinder.material.vertexColors = false;
+        sphere.material.vertexColors = false;
+      }
+      } );
+
+      // reflectivity
+      all_material.add(all_property, 'reflectivity', 0, 3, 0.01).onChange( value => {
+        cone.material.reflectivity = value;
+        cylinder.material.reflectivity = value;
+	      sphere.material.reflectivity = value;
+      } );
+      
+      // map
+      all_material.add(all_property, 'map', [ 'none', 'brick']).onChange( value => {
+	    if (value === 'brick'){
+        cone.material.map = texture_brick1;
+        cylinder.material.map = texture_brick1;
+        sphere.material.map = texture_brick1;
+        cone.material.alphaTest = 1;
+        cylinder.material.alphaTest = 1;
+        sphere.material.alphaTest = 1;
+        cone.material.alphaTest = 0;
+        cylinder.material.alphaTest = 0;
+        sphere.material.alphaTest = 0;
+      }
+	    else{
+        cone.material.map = null;
+        cylinder.material.map = null;
+        sphere.material.map = null;
+        cone.material.alphaTest = 1;
+        cylinder.material.alphaTest = 1;
+        sphere.material.alphaTest = 1;
+        cone.material.alphaTest = 0;
+        cylinder.material.alphaTest = 0;
+        sphere.material.alphaTest = 0;
+      }
+      } );
+
+
+
+      // envMap
+      all_material.add(all_property, 'envMap', [ 'none', 'brick']).onChange( value => {
+	    if (value === 'brick'){
+        cone.material.envMap = env_brick1;
+        cylinder.material.envMap = env_brick1;
+        sphere.material.envMap = env_brick1;
+      }
+	    else{
+        cone.material.envMap = null;
+        cylinder.material.envMap = null;
+        sphere.material.envMap = null;
+      }
+      } );
+
+      // specularMap
+      all_material.add(all_property, 'specularMap', [ 'none', 'brick']).onChange( value => {
+	    if (value === 'brick'){
+        cone.material.specularMap = specular_brick1;
+        cylinder.material.specularMap = specular_brick1;
+        sphere.material.specularIntensityMap = specular_brick1;
+      }
+	    else{
+        cone.material.specularMap = null;
+        cylinder.material.specularMap = null;
+        sphere.material.specularIntensityMap = null;
+      }
+      } );
+
+
+
+
+
+
+      // physical and lambert
+      const phy_lam_material = gui.addFolder("physical lambert material");
+      phy_lam_material.addColor( colors, 'emissive' ).onChange( value => {
+	      cone.material.emissive.set(value);
+        sphere.material.emissive.set(value);
+      } );
+
+      phy_lam_material.open(false)
+
+      // phong and lambert
+      const phong_lam_material = gui.addFolder("phong lambert material");
+      phong_lam_material.add(phong_lambert , 'reflectionRatio', 0, 1, 0.01 ).onChange( value => {
+	      cone.material.reflectionRatio = value;
+        cylinder.material.reflectionRatio = value;
+      } );
+      phong_lam_material.open(false)
+
+      // pysical material
+      const physical_material =  gui.addFolder("physical material")
+      physical_material.open(false)
+
+      // roughness
+      physical_material.add(physical, 'roughness', 0, 1, 0.1).onChange( value => {
+	      sphere.material.roughness = value;
+      } );
+
+      // metalness
+      physical_material.add(physical, 'metalness', 0, 1, 0.1).onChange( value => {
+	      sphere.material.metalness = value;
+      } );
+
+      // IOR
+      physical_material.add(physical, 'ior', 1, 2.33, 0.01).onChange( value => {
+	      sphere.material.ior = value;
+      } );
+
+      // iridescence
+      physical_material.add(physical, 'iridescence', 0, 3, 0.01).onChange( value => {
+	      sphere.material.iridescence = value;
+      } );
+
+      // iridescenceIOR
+      physical_material.add(physical, 'iridescenceIOR', 1, 3, 0.01).onChange( value => {
+	      sphere.material.iridescenceIOR = value;
+      } );
+
+      // sheen
+      physical_material.add(physical, 'sheen', 0, 1, 0.01).onChange( value => {
+	      sphere.material.sheen = value;
+      } );
+
+      // sheen Roughness
+      physical_material.add(physical, 'sheenRoughness', 0, 1, 0.01).onChange( value => {
+	      sphere.material.sheenRougness = value;
+      } );
+
+      // sheen color
+      physical_material.addColor(physical, 'sheenColor').onChange( value => {
+	      sphere.material.sheenColor.set(value);
+      } );
+
+      // clearcoat
+      physical_material.add(physical, 'clearcoat', 0, 1, 0.01).onChange( value => {
+	      sphere.material.clearcoat = value;
+      } );
+
+      // clearcoatRoughness
+      physical_material.add(physical, 'clearcoatRoughness', 0, 1, 0.01).onChange( value => {
+	      sphere.material.clearcoatRoughness = value;
+      } );
+
+      // specularIntensity
+      physical_material.add(physical, 'specularIntensity', 0, 1, 0.01).onChange( value => {
+	      sphere.material.specularIntensity = value;
+      } );
+
+      // sheen color
+      physical_material.addColor(physical, 'specularColor').onChange( value => {
+	      sphere.material.specularColor.set(value);
+      } );
+
+      // flatShading
+      physical_material.add(physical, 'flatShading').onChange( value => {
+	    if (value === true){
+        sphere.material.flatShading = true;
+      }
+	    else{
+        sphere.material.flatShading = false;
+      }
+      } );
+
+
+
+
+      function render () {
+        // we will execute render60fps
+        renderer.render(scene, camera);
+      };
+
+      renderer.setAnimationLoop(render);
+
+    </script>
+  </body>
+</html>

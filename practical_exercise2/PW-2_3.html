@@ -1,0 +1,362 @@
+<!-- Licensed under a BSD license. See license.html for license -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>Three.js - Basic Cube</title>
+    <style>
+      html,
+      body {
+        width: 50%;
+        height: 50%;
+        margin: 0;
+      }
+
+      #c {
+        width: 50%;
+        height: 50%;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+  <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { GUI } from 'https://cdn.jsdelivr.net/npm/lil-gui@0.19/+esm';
+  import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+  import { ParametricGeometry } from 'three/addons/geometries/ParametricGeometry.js';
+  import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+
+      var scene = new THREE.Scene();
+      scene.background = new THREE.Color( 0x000000 );
+      var aspect = window.innerWidth / window.innerHeight;
+      var camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+      var renderer = new THREE.WebGLRenderer();
+      console.log(renderer.context);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      camera.position.z = 25;
+      camera.position.y = 3;
+      // controls
+      let controls = new OrbitControls(camera, renderer.domElement);  //initilaze control
+      controls.listenToKeyEvents(window); // link to keybord (optional)
+      controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
+      controls.dampingFactor = 0.05;
+      controls.screenSpacePanning = false;
+      controls.minDistance = 2;
+      controls.maxDistance = 15;
+      controls.maxPolarAngle = Math.PI;
+
+
+      var colors = {
+	      color_wall_white: 0xffffff,
+        color_wall_red: 0xe50606,
+        color_wall_green: 0x04bd04
+      }
+
+
+
+      var geometry = new THREE.PlaneGeometry( 10, 10 );
+      var material_wall = new THREE.MeshLambertMaterial( {color: colors.color_wall_white, side: THREE.DoubleSide} );
+      const material_white = new THREE.MeshLambertMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+      const material_green = new THREE.MeshLambertMaterial( {color: 0x04bd04, side: THREE.BackSide} );
+      const material_red = new THREE.MeshLambertMaterial( {color: 0xe50606, side: THREE.FrontSide} );
+      const material_gray = new THREE.MeshLambertMaterial({color: 0x666666});
+      const material_black = new THREE.MeshLambertMaterial({color: 0x000000});
+      const material_cone = new THREE.MeshLambertMaterial();
+      const material_cylinder = new THREE.MeshPhongMaterial();
+      const material_sphere = new THREE.MeshPhysicalMaterial();
+
+      // floor
+      var floor = new THREE.Mesh(geometry, material_white);
+      floor.rotation.x = Math.PI/2;
+      floor.position.set(0, -5, 5);
+      scene.add(floor);
+
+      // wall_white
+      var wall_white = new THREE.Mesh(geometry, material_wall);
+      wall_white.position.set(0, 0, 0);
+      scene.add(wall_white);
+
+      // ceiling
+      var ceiling = new THREE.Mesh(geometry, material_white);
+      ceiling.rotation.x = Math.PI/2;
+      ceiling.position.set(0, 5, 5);
+      scene.add(ceiling);
+
+      // wall_red
+      var wall_red = new THREE.Mesh(geometry, material_red);
+      wall_red.rotation.y = Math.PI/2;
+      wall_red.position.set(-5, 0, 5);
+      scene.add(wall_red);
+
+      // wall_green
+      var wall_green = new THREE.Mesh(geometry, material_green);
+      wall_green.rotation.y = Math.PI/2;
+      wall_green.position.set(5, 0, 5);
+      scene.add(wall_green);
+
+      // desk_board
+      var geometry = new THREE.BoxGeometry(5,0.5,3);
+      var desk_board = new THREE.Mesh(geometry, material_gray);
+      desk_board.position.set(0, 0, 5);
+      scene.add(desk_board);
+
+      // desk_leg_left1
+      var geometry = new THREE.BoxGeometry(0.5,0.5,2.5);
+      var desk_leg_left1 = new THREE.Mesh(geometry, material_gray);
+      desk_leg_left1.position.set(-2, -0.5, 0);
+      desk_board.add(desk_leg_left1)
+
+      // desk_leg_right1
+      var desk_leg_right1 = new THREE.Mesh(geometry, material_gray);
+      desk_leg_right1.position.set(2, -0.5, 0);
+      desk_board.add(desk_leg_right1);
+
+      // desk_leg_left2
+      var geometry = new THREE.CylinderGeometry(0.25, 0.25, 4, 20 );
+      var desk_leg_left2= new THREE.Mesh(geometry, material_gray);
+      wall_green.rotation.z = Math.PI/2;
+      desk_leg_left2.position.set(-2, -2, 0);
+      desk_board.add(desk_leg_left2);
+
+      // desk_leg_right2
+      var desk_leg_right2= new THREE.Mesh(geometry, material_gray);
+      wall_green.rotation.z = Math.PI/2;
+      desk_leg_right2.position.set(2, -2, 0);
+      desk_board.add(desk_leg_right2);
+
+      // desk_leg_left3
+      var geometry = new THREE.BoxGeometry(0.5,0.25,2.5);
+      var desk_leg_left3 = new THREE.Mesh(geometry, material_gray);
+      desk_leg_left3.position.set(-2, -3.9, 0);
+      desk_board.add(desk_leg_left3);
+
+      // desk_leg_right3
+      var geometry = new THREE.BoxGeometry(0.5,0.25,2.5);
+      var desk_leg_right3 = new THREE.Mesh(geometry, material_gray);
+      desk_leg_right3.position.set(2, -3.9, 0);
+      desk_board.add(desk_leg_right3);
+
+      // desk_leg_center
+      var geometry = new THREE.BoxGeometry(3.5,0.5,0.1);
+      var desk_leg_center = new THREE.Mesh(geometry, material_gray);
+      desk_leg_center.position.set(0, -1.3, 0);
+      desk_board.add(desk_leg_center);
+      
+      // floor_black
+      var geometry = new THREE.BoxGeometry(8,1,8);
+      var floor_black = new THREE.Mesh(geometry, material_black);
+      floor_black.position.set(0, -4.5, 5);
+      scene.add(floor_black);
+
+      // cone
+      var geometry = new THREE.ConeGeometry(0.5, 1.5, 20);
+      var cone = new THREE.Mesh(geometry, material_cone);
+      cone.position.set(-1, 1, -0.5);
+      desk_board.add(cone);
+
+      // cylinder
+      var geometry = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 20 );
+      var cylinder= new THREE.Mesh(geometry, material_cylinder);
+      cylinder.position.set(1, 1, -0.5);
+      desk_board.add(cylinder);
+
+      // sphere
+      var geometry = new THREE.SphereGeometry(0.5, 20, 20);
+      var sphere =  new THREE.Mesh(geometry, material_sphere);
+      sphere.position.set(0, 0.75, 0.5);
+      desk_board.add(sphere);
+      
+      var light_color = 0xffffff;
+      var hemi_color1 = 0xcc8593;
+      var hemi_color2 = 0x27d0d3;
+      var light_intensity = 2;
+
+      const pointlight = new THREE.PointLight(light_color, light_intensity);
+      pointlight.position.set(0,5,5);
+
+      
+
+      const directionallight = new THREE.DirectionalLight(light_color, light_intensity);
+      directionallight.position.set(0,5,5);
+      directionallight.target.position.set(0, 0, 0);
+
+      const spotlight = new THREE.SpotLight(light_color, light_intensity);
+      spotlight.position.set(0,5,5);
+      spotlight.target.position.set(0, 0, 0);
+
+      const hemilight = new THREE.HemisphereLight(hemi_color1, hemi_color2, light_intensity);
+      hemilight.position.set(0,5,5);
+
+      // GUI 
+      const gui = new GUI();
+
+
+      var light_on = {
+        point: false,
+	      directional: false,
+        spot: false,
+        hemiShpere: false,
+        ambient: false
+      }
+      
+      class ColorGUIHelper {
+    constructor(object, prop) {
+      this.object = object;
+      this.prop = prop;
+    }
+    get value() {
+      return `#${this.object[this.prop].getHexString()}`;
+    }
+    set value(hexString) {
+      this.object[this.prop].set(hexString);
+    }
+  }
+
+
+      // Add GUI
+      gui.addColor( colors, 'color_wall_white' ).onChange( value => {
+	      wall_white.material.color.set(value);
+      } );
+
+      gui.addColor( colors, 'color_wall_red' ).onChange( value => {
+	      wall_red.material.color.set(value);
+      } );
+
+      gui.addColor( colors, 'color_wall_green' ).onChange( value => {
+	      wall_green.material.color.set(value);
+      } );
+
+      //point light
+      gui.add(light_on, 'point' ).onChange( value => {
+        console.log(value);
+        if (value === true){
+          scene.add(pointlight);
+          pointFolder.open();
+        }
+	      else{
+          scene.remove(pointlight);
+          pointFolder.open(false);
+        }
+      } );
+
+      const pointFolder = gui.addFolder( 'property' );
+      pointFolder.addColor(new ColorGUIHelper(pointlight, 'color'), 'value').name('color');
+      pointFolder.add(pointlight, 'intensity', 0, 20, 1);
+      pointFolder.add(pointlight, 'distance', 1, 20, 0.5);
+      pointFolder.add(pointlight.position, 'x', -5, 5);
+      pointFolder.add(pointlight.position, 'z', 0, 10);
+      pointFolder.open(false);
+
+      // directional light
+      gui.add(light_on, 'directional' ).onChange( value => {
+        console.log(value);
+        if (value === true){
+          scene.add(directionallight);
+          scene.add(directionallight.target);
+          directionalFolder.open();
+        }
+	      else{
+          scene.remove(directionallight);
+          directionalFolder.open(false);
+        }
+      } );
+      
+      const directionalFolder = gui.addFolder( 'property' );
+      directionalFolder.addColor(new ColorGUIHelper(directionallight, 'color'), 'value').name('color');
+      directionalFolder.add(directionallight, 'intensity', 0, 4, 0.02);
+      directionalFolder.add(directionallight.position, 'x', -5, 5);
+      directionalFolder.add(directionallight.position, 'z', 0, 10);
+      directionalFolder.add(directionallight.target.position, 'x', -5, 5).name("target x");
+      directionalFolder.add(directionallight.target.position, 'z', 0, 10).name("target z");
+      directionalFolder.add(directionallight.target.position, 'y', 0, 10).name("target y");
+      directionalFolder.open(false);
+
+      // spot light
+      gui.add(light_on, 'spot' ).onChange( value => {
+        console.log(value);
+        if (value === true){
+          scene.add(spotlight);
+          scene.add(spotlight.target);
+          spotFolder.open();
+        }
+	      else{
+          scene.remove(spotlight)
+          spotFolder.open(false);
+        }
+      } );
+
+      const spotFolder = gui.addFolder( 'property' );
+      spotFolder.addColor(new ColorGUIHelper(spotlight, 'color'), 'value').name('color');
+      spotFolder.add(spotlight, 'intensity', 0, 20, 1);
+      spotFolder.add(spotlight, 'distance', 1, 20, 0.5);
+      spotFolder.add(spotlight, 'angle', 0, 6.28, 0.1);
+      spotFolder.add(spotlight.position, 'x', -5, 5);
+      spotFolder.add(spotlight.position, 'z', 0, 10);
+      spotFolder.add(spotlight.target.position, 'x', -5, 5).name("target x");
+      spotFolder.add(spotlight.target.position, 'z', 0, 10).name("target z");
+      spotFolder.add(spotlight.target.position, 'y', 0, 10).name("target y");
+      spotFolder.open(false);
+
+      // hiem shpere
+      gui.add(light_on, 'hemiShpere' ).onChange( value => {
+        console.log(value);
+        if (value === true){
+          scene.add(hemilight);
+          hemiFolder.open(true);
+        }
+	      else{
+          scene.remove(hemilight);
+          hemiFolder.open(false);
+        }
+      } );
+
+      const hemiFolder = gui.addFolder( 'property' );
+
+      hemiFolder.addColor(new ColorGUIHelper(hemilight, 'color'), 'value').name('skyColor');
+      hemiFolder.addColor(new ColorGUIHelper(hemilight, 'groundColor'), 'value').name('groundColor');
+      hemiFolder.add(hemilight, 'intensity', 0, 4, 0.02);
+      hemiFolder.add(hemilight.position, 'x', -5, 5);
+      hemiFolder.add(hemilight.position, 'z', 0, 10);
+      hemiFolder.open(false);
+
+
+      //ambient light
+      gui.add(light_on, 'ambient' ).onChange( value => {
+        console.log(value);
+        if (value === true){
+          scene.add(amb_light);
+        }
+	      else{
+          scene.remove(amb_light);
+        }
+      } );
+
+      const amb_light = new THREE.AmbientLight(light_color, 0.1);
+      amb_light.position.set(0,0,0);
+
+      function render () {
+        // we will execute render60fps
+        requestAnimationFrame(render);
+        renderer.render(scene, camera);
+      };
+
+      render();
+    </script>
+  </body>
+</html>
