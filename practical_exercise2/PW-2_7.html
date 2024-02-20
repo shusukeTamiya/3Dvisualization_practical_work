@@ -41,6 +41,12 @@
   import { ParametricGeometry } from 'three/addons/geometries/ParametricGeometry.js';
   import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
   import {VRButton} from 'three/addons/webxr/VRButton.js';
+  import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
+  import { HTMLMesh } from 'three/addons/interactive/HTMLMesh.js';
+  import { InteractiveGroup } from 'three/addons/interactive/InteractiveGroup.js';
+  import Stats from 'three/addons/libs/stats.module.js';
+
+
 
       var scene = new THREE.Scene();
       scene.background = new THREE.Color( 0x000000 );
@@ -64,6 +70,27 @@
       controls.minDistance = 2;
       controls.maxDistance = 15;
       controls.maxPolarAngle = Math.PI;
+
+      // vr contrloller
+      var geometry = new THREE.BufferGeometry();
+			geometry.setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 5 ) ] );
+
+      const controller1 = renderer.xr.getController( 0 );
+			controller1.add( new THREE.Line( geometry ) );
+			scene.add( controller1 );
+
+			const controller2 = renderer.xr.getController( 1 );
+			controller2.add( new THREE.Line( geometry ) );
+			scene.add( controller2 );
+
+			const controllerModelFactory = new XRControllerModelFactory();
+      const controllerGrip1 = renderer.xr.getControllerGrip( 0 );
+			controllerGrip1.add( controllerModelFactory.createControllerModel( controllerGrip1 ) );
+			scene.add( controllerGrip1 );
+
+			const controllerGrip2 = renderer.xr.getControllerGrip( 1 );
+			controllerGrip2.add( controllerModelFactory.createControllerModel( controllerGrip2 ) );
+			scene.add( controllerGrip2 );
 
 
 
@@ -258,7 +285,7 @@
       // GUI 
       const gui = new GUI();
 
-      gui.open(false);
+      // gui.open(false);
 
       var light_on = {
         point: true,
@@ -317,7 +344,7 @@
       pointFolder.add(pointlight, 'intensity', 0, 20, 1);
       pointFolder.add(pointlight, 'distance', 1, 20, 0.5);
       scene.add(pointlight);
-      pointFolder.open(false);
+      // pointFolder.open(false);
 
       const amb_light = new THREE.AmbientLight(light_color, 0.02);
       group.add(amb_light);
@@ -371,7 +398,7 @@
         sphere.material.color.set(value);
         cylinder.material.color.set(value);
       } );
-      all_material.open(false)
+
 
       
 
@@ -599,7 +626,7 @@
         sphere.material.emissive.set(value);
       } );
 
-      phy_lam_material.open(false)
+      // phy_lam_material.open(false)
 
       // phong and lambert
       const phong_lam_material = gui.addFolder("phong lambert material");
@@ -607,11 +634,11 @@
 	      cone.material.reflectionRatio = value;
         cylinder.material.reflectionRatio = value;
       } );
-      phong_lam_material.open(false)
+      // phong_lam_material.open(false)
 
       // pysical material
       const physical_material =  gui.addFolder("physical material")
-      physical_material.open(false)
+      // physical_material.open(false)
 
       // roughness
       physical_material.add(physical, 'roughness', 0, 1, 0.1).onChange( value => {
@@ -682,8 +709,24 @@
         sphere.material.flatShading = false;
       }
       } );
+      
 
+      const group2 = new InteractiveGroup( renderer, camera );
+			scene.add( group2 );
 
+			const mesh = new HTMLMesh( gui.domElement );
+			mesh.position.x = - 0.75;
+			mesh.position.z =  -0.2;
+      mesh.position.y =  0.55;
+			mesh.rotation.y = Math.PI / 4;
+			mesh.scale.setScalar( 2 );
+			group2.add( mesh );
+      
+      function animate() {
+
+        renderer.setAnimationLoop( render );
+
+      }
 
 
       function render () {
