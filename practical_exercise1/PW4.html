@@ -231,32 +231,6 @@
       front_left.add(front_left2);
 
 
-
-
-      // //back left thigh
-      // var geometry = new THREE.CylinderGeometry(0.75, 0.75, 6, 6, 3, false, Math.PI*0.5, Math.PI)
-      // var thigh_parts1 = new THREE.Mesh(geometry, material_yellow);
-      // var geometry = new THREE.PlaneGeometry( 1.5, 6 );
-      // var thigh_parts2 = new THREE.Mesh(geometry, material_yellow);
-      // var thigh_bl = new THREE.Group();
-      // thigh_bl.add(thigh_parts1);
-      // thigh_bl.add(thigh_parts2);
-      // scene.add(thigh_bl);
-      // thigh_bl.rotation.z =  -Math.PI/5
-      // thigh_bl.position.set(-6.3,-1.7,-1.7);
-
-      // //back left calf
-      // var geometry = new THREE.CylinderGeometry(0.5, 0.5, 5, 6, 3, false, Math.PI*0.5, -Math.PI)
-      // var calf_parts1 = new THREE.Mesh(geometry, material_black);
-      // var geometry = new THREE.PlaneGeometry( 1, 5 );
-      // var calf_parts2 = new THREE.Mesh(geometry, material_black);
-      // var calf_bl = new THREE.Group();
-      // calf_bl.add(calf_parts1);
-      // calf_bl.add(calf_parts2);
-      // scene.add(calf_bl);
-      // calf_bl.rotation.z =  Math.PI/5
-      // calf_bl.position.set(-6.8,-5,-1.7);
-
       //back left
       var geometry = new THREE.CylinderGeometry(0.75, 0.75, 6, 6, 3, false, Math.PI*0.5, -Math.PI)
       var thigh_parts1_bl = new THREE.Mesh(geometry, material_yellow);
@@ -382,58 +356,6 @@
           arm_joint7_1.rotation.y =  (Math.PI/16) - 0.0625*Math.PI*Math.cos(4*time);
           arm_joint7_2.rotation.y =  -(Math.PI/16) + 0.0625*Math.PI*Math.cos(4*time);
         }
-        
-        // body.position.x += speed;
-        // front_left.rotation.y = 0.3*Math.sin(time);
-        // front_right.rotation.y = 0.3*Math.sin(-time);
-        // back_left.rotation.y = 0.3*Math.sin(-time);
-        // back_right.rotation.y = 0.3*Math.sin(time);
-        // arm_joint1.position.x += speed;
-
-        // else{
-        //   front_left2.rotation.y = 0.3*Math.sin(time);
-        //   front_right2.rotation.y = 0.3*Math.sin(time);
-        //   back_left2.rotation.y = 0.3*Math.sin(time);
-        //   back_right2.rotation.y = 0.3*Math.sin(time);
-        //   if(0>Math.sin(time)){
-        //     front_left.position.y -= speed;
-        //     front_right.position.y -= speed;
-        //     back_right.position.y -= speed;
-        //     back_left.position.y -= speed;
-        //     body.position.y -= speed;
-        //     arm_joint1.position.y -= speed
-        //   }
-        //   else{
-        //     front_left.position.y += speed;
-        //     front_right.position.y += speed;
-        //     back_right.position.y += speed;
-        //     back_left.position.y += speed;
-        //     body.position.y += speed;
-        //     arm_joint1.position.y += speed
-        //   }
-        // }
-        
-        // front_left2.rotation.y = 0.3*Math.sin(time);
-        // front_right2.rotation.y = 0.3*Math.sin(time);
-        // back_left2.rotation.y = 0.3*Math.sin(time);
-        // back_right2.rotation.y = 0.3*Math.sin(time);
-        // if(0<Math.sin(time)){
-        //   front_left.position.y -= speed;
-        //   front_right.position.y -= speed;
-        //   back_right.position.y -= speed;
-        //   back_left.position.y -= speed;
-        //   body.position.y -= speed;
-        //   arm_joint1.position.y -= speed
-        // }
-        // else{
-        //   front_left.position.y += speed;
-        //   front_right.position.y += speed;
-        //   back_right.position.y += speed;
-        //   back_left.position.y += speed;
-        //   body.position.y += speed;
-        //   arm_joint1.position.y += speed
-        // }
-        
 
 
         // renderer.render(scene, camera);
